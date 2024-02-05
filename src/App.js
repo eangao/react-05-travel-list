@@ -383,3 +383,18 @@ function Stats() {
     </footer>
   );
 }
+
+//////////////////////////////////////////////////////////////
+// State vs. Props
+//////////////////////////////////////////////////////////////
+// see pdf lecture and video
+
+// A very common beginner question
+// or sometimes even an interview question is this,
+// what's the difference between state and props?
+// Well, we actually already learned almost everything
+// to answer that question,
+// but let's still make the difference between state
+// and props crystal clear in this lecture,
+// which will also serve
+// as a nice summary to this entire section.
