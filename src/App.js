@@ -639,3 +639,22 @@ function Stats() {
 // we move that piece of state up
 // to the first common parent component,
 // which again, in our case here, was the up component.
+
+/////////////////////////////////////////////////////////////////////////
+// Reviewing "Lifting Up State"
+/////////////////////////////////////////////////////////////////////////
+// see pdf lecture and video
+
+// So we just created
+// an important piece of state
+// and lifted it up to a parent component
+// that is common to both components
+// that need to use or to update that state, right?
+// However, this whole idea
+// might still be a bit confusing
+// because in fact, it can seem quite counterintuitive.
+// And so let's now look at another example
+// and some diagrams to really understand
+// how lifting up state works
+// and why it's so important.
+// And as an example,
