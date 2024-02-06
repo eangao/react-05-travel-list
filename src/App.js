@@ -1021,3 +1021,13 @@ function Stats() {
     </footer>
   );
 }
+
+//////////////////////////////////////////////////////////////////////
+// Derived State
+//////////////////////////////////////////////////////////////////////
+// see pdf lecture and video
+
+// Another aspect that I mentioned
+// in the state management lecture
+// was derived state.
+// Sounds complicated but it's actually pretty straightforward.
