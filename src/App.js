@@ -425,11 +425,22 @@ const initialItems = [
 ];
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  function handleAddItems(item) {
+    setItems((items) => [...items, item]);
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      {/* So, as I mentioned before, we can actually pass anything as a prop. And
+      so, that includes functions. So, here we pass in handleAddItems as a prop
+      and we call that prop onAddItems, which of course, again, could also be
+      called handleAddItems which some people prefer, but many times, you will
+      see this convention. */}
+      <Form onAddItems={handleAddItems} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -439,9 +450,117 @@ function Logo() {
   return <h1>🌴 Far Away 💼</h1>;
 }
 
-function Form() {
+function Form({ onAddItems }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
+
+  //   And now what do you think will be the default value
+  // for this state variable?
+  // Well, remember that these items here
+  // are basically the packing items
+  // that are displayed here in the UI.
+  // And so this, remember, is an array
+  // and therefore, our initial state for the items
+  // is just an empty array.
+  // So, when we open up a new packing list...
+  // So, when we open up this app for the first time,
+  // of course, we don't want to have any items.
+  // And so, that's what the empty array here basically is.
+  ////////////
+  // const [items, setItems] = useState([]);
+  ////////////
+  //   So, we are not using this items variable
+  // anywhere in our JSX yet.
+  // And the reason for that
+  // is that actually, we do not need these items
+  // in this current component.
+  // The only goal of the form component
+  // is to add new items to this array,
+  // but not to render it.
+  //   Instead, remember that who renders these items
+  // is actually the packing list component.
+
+  //   But with this, we now created ourselves a problem.
+  // So, let's take a closer look here at the component tree.
+  // So, right now, our item state
+  // is here inside the form component, right?
+  // And so, this is where we update the state.
+  // However, we need the state itself.
+  // So, we need this item state variable
+  // here in the packing list
+  // because again, this is where it should actually be rendered
+  // onto the UI.
+  // And so now, how do we get this state from the form
+  // to the packing list?
+  // Well, we cannot pass it as a prop
+  // because the form is not a parent component of packing list,
+  // it is simply a sibling component.
+  // But data can only flow down the tree.
+  // It cannot flow up the tree or sideways.
+  // So therefore, we cannot simply pass these items
+  // to the packing list via props.
+  // Instead, we now need to use a technique
+  // that I mentioned before,
+  // which is to lift up state.
+  // So, what we're going to do now
+  // is to take this state here,
+  // so this line of code,
+  // and we will move it to the closest common parent component.
+  // So, which one is that?
+  // Well, it's simply the app component, right?
+  // So, this component is both, a parent of the form
+  // and of the packing list
+  // which are the two components which need this state.
+
+  ////////////
+  // function handleAddItems(item) {
+  //     And this new items array
+  // will basically be the current items array,
+  // plus, the new item added to the end.
+  //     And so what this means
+  // is that the new state depends on the current state,
+  // and therefore, here we now need to pass in
+  // a callback function.
+  // So, not just a single value.
+
+  //     So, remember that in React,
+  // we are not allowed to mutate state.
+  // So, we cannot do this.
+  // So, we can not simply push the new item
+  // into the items array
+  // because with that, we would be mutating.
+  // So, we would be changing this item's array right here.
+  // And again, that's really not allowed in React.
+
+  // So, React is all about immutability.
+  // And so, the solution here
+  // is to create a brand new array
+  // which contains all the current items, plus, the new one.
+  // So, let's return a new array
+  // and then, in there, we simply spread the current items
+  // and then we add another item
+  // which is simply called item.
+  // So, the item that we are receiving here.
+
+  //////////////////
+  // setItems((items) => [...items, item]);
+  //     Now, if this looks strange to you
+  // then please go back
+  // to the review of essential JavaScript section
+  // where I have a couple of videos
+  // on how to work with array in a immutable way.
+  // So basically, how to add new items,
+  // how to update
+  // and how to delete items from an array
+  // without mutating the original.
+  // So, in React,
+  // that's something that we need to do all the time.
+  // And so, again, if you're not sure how that works
+  // then please go back to that section
+  // because from now on,
+  // I will simply assume that you know how to do this.
+  //}
+  ///////////
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -449,6 +568,8 @@ function Form() {
     if (!description) return;
     const newItem = { description, quantity, packed: false, id: Date.now() };
     console.log(newItem);
+
+    onAddItems(newItem);
 
     setDescription("");
     setQuantity(1);
@@ -480,11 +601,11 @@ function Form() {
   );
 }
 
-function PackingList() {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
@@ -510,3 +631,11 @@ function Stats() {
     </footer>
   );
 }
+
+// So, this is how we lift up state.
+// So, basically what that means
+// is that whenever multiple sibling components
+// need access to the same state,
+// we move that piece of state up
+// to the first common parent component,
+// which again, in our case here, was the up component.
