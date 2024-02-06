@@ -672,12 +672,6 @@
 
 import { useState } from "react";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: true },
-  { id: 3, description: "Charger", quantity: 12, packed: false },
-];
-
 export default function App() {
   const [items, setItems] = useState([]);
 
@@ -685,11 +679,44 @@ export default function App() {
     setItems((items) => [...items, item]);
   }
 
+  function handleDeleteItem(id) {
+    //     Now about the delete operation itself,
+    // we will of course delete the item from the user
+    // interface by updating state.
+    // So we call setItems.
+    // And now here in setItems, we need the new array
+    // after the item has been deleted.
+    // Now once again this new items array
+    // will be based on the current one.
+    // And so we need a callback function which receives
+    // the current item as its input.
+    // And so now let's say items.filter
+    // which will loop over the array and in each iteration
+    // it will get access to the items object.
+
+    //     And so now, basically, all we want to do is to filter out
+    // the item that has the ID that we got here, right?
+    // So item.id is different from the ID.
+    // So the ID that we pass in.
+    // So whenever this condition here is true,
+    // the item will end up in the new array.
+    // So of the array of the items that have not been deleted.
+    // But when this is false, so when item.id is equal the ID,
+    // then that element will no longer be part of the final array.
+    // And so that's how we remove,
+    // so how we delete elements from arrays.
+    setItems((items) => items.filter((item) => item.id !== id));
+
+    console.log(id);
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} />
+      {/* and so I'm using the same naming convention as before where I call the
+      prop on the lead item and then pass in the function, handleDeleteItem */}
+      <PackingList items={items} onDeleteItem={handleDeleteItem} />
       <Stats />
     </div>
   );
@@ -742,25 +769,63 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items }) {
+function PackingList({ items, onDeleteItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} />
+          <Item item={item} onDeleteItem={onDeleteItem} key={item.id} />
         ))}
       </ul>
     </div>
   );
 }
+// And then remember that the click
+// actually happens here on this button.
+// So inside the item component.
+// And so here we also will need access to this prop.
+// Therefore we now need to pass it in
+// along the item right here.
+// So onDeleteItem = onDeleteItem.
+// And so we're basically passing now this prop
+// through the packing list into the item.
+// So it moves here from app to packing list
+// and then to each of these items.
+// and then to each of these items.
+// So packing list itself doesn't really need it,
+// but of course, this is the only place
+// where we can receive it.
+// Because we cannot pass it directly from app to item, right?
+// So that would not be possible.
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
-      <button>❌</button>
+
+      {/* Well, when we simply specify the function here like this,
+        then React will call the function as the event happens,
+        and it does so by passing in the event object.
+        So we actually used this to our advantage in the form,
+        so right here where we then received the event.
+        But right now we do not want to receive the event,
+        but instead the ID of the current item.
+        And so we need to create a new function here,
+        and then we pass in the current ID.
+        So item.id.
+        And once more, it's really important
+        that you don't forget this.
+        Because otherwise React
+        will just immediately call the function
+        which is not what we want.
+        We want a function here really, so that React
+        can then call this function only when the event happens.
+        And this is actually it.
+        So this should do the job. */}
+      {/* <button onClick={onDeleteItem()}>❌</button> */}
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   );
 }
