@@ -838,12 +838,216 @@
 //   );
 // }
 
-///////////////////////////////////////////////////////////////////////
-// Updating an Item: Complex Immutable Data Operation
-///////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
+// // Updating an Item: Complex Immutable Data Operation
+// ///////////////////////////////////////////////////////////////////////
 
-// Next up, let's take care of updating items
-// by toggling their packed status.
+// // Next up, let's take care of updating items
+// // by toggling their packed status.
+
+// import { useState } from "react";
+
+// export default function App() {
+//   const [items, setItems] = useState([]);
+
+//   function handleAddItems(item) {
+//     setItems((items) => [...items, item]);
+//   }
+
+//   function handleDeleteItem(id) {
+//     setItems((items) => items.filter((item) => item.id !== id));
+
+//     console.log(id);
+//   }
+
+//   function handleToggleItem(id) {
+//     //     And so then let's again set the items.
+//     // And then we need to pass in a new array
+//     // which, just like before, will depend on the current array.
+//     // So we have our callback function here.
+//     // And so now in order
+//     // to update one of the objects in the array,
+//     // we will simply loop over the entire items array
+//     // using the map property
+//     // which will then in the end return a brand new array
+//     // with the same length of the initial items array.
+//     // But one of the objects
+//     // will then, of course, have been updated.
+//     // So in the iteration, each of the elements is called an item.
+//     // And then here is what we're gonna do.
+//     // So whenever the item has the ID
+//     // that is equal to the ID that we passed in,
+//     // so which means that this is the object
+//     // that we want to actually update,
+//     // then we create a brand new object based on the current item,
+//     // and then we set packed to the opposite of packed,
+//     // so of item.packed.
+//     // And that's it.
+//     //     And if else, so for all the other objects,
+//     // we will simply return the current item.
+//     // And just once again,
+//     // I want to emphasize that I covered exactly
+//     // that this is how we update an object in an array
+//     // in great depth, in the section where we review
+//     // essential JavaScript for React.
+//     setItems((items) =>
+//       items.map((item) =>
+//         item.id === id ? { ...item, packed: !item.packed } : item
+//       )
+//     );
+//   }
+
+//   return (
+//     <div className="app">
+//       <Logo />
+//       <Form onAddItems={handleAddItems} />
+
+//       <PackingList
+//         items={items}
+//         onDeleteItem={handleDeleteItem}
+//         onToggleItem={handleToggleItem}
+//       />
+//       <Stats />
+//     </div>
+//   );
+// }
+
+// function Logo() {
+//   return <h1>🌴 Far Away 💼</h1>;
+// }
+
+// function Form({ onAddItems }) {
+//   const [description, setDescription] = useState("");
+//   const [quantity, setQuantity] = useState(1);
+
+//   function handleSubmit(e) {
+//     e.preventDefault();
+
+//     if (!description) return;
+//     const newItem = { description, quantity, packed: false, id: Date.now() };
+//     console.log(newItem);
+
+//     onAddItems(newItem);
+
+//     setDescription("");
+//     setQuantity(1);
+//   }
+
+//   return (
+//     <form className="add-form" onSubmit={handleSubmit}>
+//       <h3>What do you need for your 😍 trip? </h3>
+//       <select
+//         type="number"
+//         value={quantity}
+//         onChange={(e) => setQuantity(Number(e.target.value))}
+//       >
+//         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+//           <option value={num} key={num}>
+//             {num}
+//           </option>
+//         ))}
+//       </select>
+
+//       <input
+//         type="text"
+//         placeholder="Item..."
+//         value={description}
+//         onChange={(e) => setDescription(e.target.value)}
+//       ></input>
+//       <button>Add</button>
+//     </form>
+//   );
+// }
+
+// function PackingList({ items, onDeleteItem, onToggleItem }) {
+//   return (
+//     <div className="list">
+//       <ul>
+//         {items.map((item) => (
+//           <Item
+//             item={item}
+//             onDeleteItem={onDeleteItem}
+//             onToggleItem={onToggleItem}
+//             key={item.id}
+//           />
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+
+// function Item({ item, onDeleteItem, onToggleItem }) {
+//   return (
+//     <li>
+//       {/* that the element has the value defined by some state and it also has an
+//       event handler which listens for the change and updates the state
+//       accordingly. */}
+
+//       {/* And so now next up we need to add on change handler.
+//       So we need to listen for the change event,
+//       which basically happens
+//       each time that we click here on the checkbox.
+//       Now here for now,
+//       let's actually specify just an empty function.
+//       So a function that doesn't do anything.
+//       And here we're missing this.
+//       All right.
+//       And so the reason for that is that of course
+//       this function here
+//       that we are eventually going to specify here
+//       is going to change the packed value of the item state.
+//       And so that function will once again be placed
+//       where the state actually lives, so inside of app.
+//       And then we will pass it down using a prop
+//       just like we did with on delete item.
+//       So this is something similar. */}
+//       <input
+//         type="checkbox"
+//         value={item.packed}
+//         onChange={() => onToggleItem(item.id)}
+//       />
+//       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
+//         {item.quantity} {item.description}
+//       </span>
+//       <button onClick={() => onDeleteItem(item.id)}>❌</button>
+//     </li>
+//   );
+// }
+
+// function Stats() {
+//   return (
+//     <footer className="stats">
+//       <em>💼 You have X items on your list, and you already packed X (X%)</em>
+//     </footer>
+//   );
+// }
+
+//////////////////////////////////////////////////////////////////////
+// Derived State
+//////////////////////////////////////////////////////////////////////
+// see pdf lecture and video
+
+// Another aspect that I mentioned
+// in the state management lecture
+// was derived state.
+// Sounds complicated but it's actually pretty straightforward.
+
+////////////////////////////////////////////////////////////////////
+// Calculating Statistics as Derived State
+////////////////////////////////////////////////////////////////////
+
+// Of course, let's now use the idea
+// of derived state in practice.
+// And in particular
+// we now want to calculate our statistics here.
+// So calculating the number of items on the list,
+// how many we already have packed
+// and then the percentage of that.
+// Now, if we think about these numbers,
+// for example, the number of items in the list,
+// that number can be directly computed
+// from the items array itself, right?
+// And so derived state is perfect for this,
 
 import { useState } from "react";
 
@@ -861,35 +1065,6 @@ export default function App() {
   }
 
   function handleToggleItem(id) {
-    //     And so then let's again set the items.
-    // And then we need to pass in a new array
-    // which, just like before, will depend on the current array.
-    // So we have our callback function here.
-    // And so now in order
-    // to update one of the objects in the array,
-    // we will simply loop over the entire items array
-    // using the map property
-    // which will then in the end return a brand new array
-    // with the same length of the initial items array.
-    // But one of the objects
-    // will then, of course, have been updated.
-    // So in the iteration, each of the elements is called an item.
-    // And then here is what we're gonna do.
-    // So whenever the item has the ID
-    // that is equal to the ID that we passed in,
-    // so which means that this is the object
-    // that we want to actually update,
-    // then we create a brand new object based on the current item,
-    // and then we set packed to the opposite of packed,
-    // so of item.packed.
-    // And that's it.
-    //     And if else, so for all the other objects,
-    // we will simply return the current item.
-    // And just once again,
-    // I want to emphasize that I covered exactly
-    // that this is how we update an object in an array
-    // in great depth, in the section where we review
-    // essential JavaScript for React.
     setItems((items) =>
       items.map((item) =>
         item.id === id ? { ...item, packed: !item.packed } : item
@@ -979,28 +1154,6 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
 function Item({ item, onDeleteItem, onToggleItem }) {
   return (
     <li>
-      {/* that the element has the value defined by some state and it also has an
-      event handler which listens for the change and updates the state
-      accordingly. */}
-
-      {/* And so now next up we need to add on change handler.
-      So we need to listen for the change event,
-      which basically happens
-      each time that we click here on the checkbox.
-      Now here for now,
-      let's actually specify just an empty function.
-      So a function that doesn't do anything.
-      And here we're missing this.
-      All right.
-      And so the reason for that is that of course
-      this function here
-      that we are eventually going to specify here
-      is going to change the packed value of the item state.
-      And so that function will once again be placed
-      where the state actually lives, so inside of app.
-      And then we will pass it down using a prop
-      just like we did with on delete item.
-      So this is something similar. */}
       <input
         type="checkbox"
         value={item.packed}
@@ -1021,13 +1174,3 @@ function Stats() {
     </footer>
   );
 }
-
-//////////////////////////////////////////////////////////////////////
-// Derived State
-//////////////////////////////////////////////////////////////////////
-// see pdf lecture and video
-
-// Another aspect that I mentioned
-// in the state management lecture
-// was derived state.
-// Sounds complicated but it's actually pretty straightforward.
