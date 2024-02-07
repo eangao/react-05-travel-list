@@ -1287,10 +1287,53 @@ function Form({ onAddItems }) {
 }
 
 function PackingList({ items, onDeleteItem, onToggleItem }) {
+  const [sortBy, setSortBy] = useState("input");
+  let sortedItems;
+
+  if (sortBy === "input") sortedItems = items;
+
+  //   So sortedItems will then become items.
+  // And now first we use slice.
+  // Because with this we basically take a copy
+  // of the array and that's very important
+  // because the sort method is a mutating method.
+  // And so if we didn't do this
+  // then the items would actually get sorted as well.
+  // So we don't want that.
+  if (sortBy === "description")
+    //   Now in this case, since we want to sort alphabetically,
+    // we can use the localCompare method.
+    // So we want to take a, which is basically one object
+    // of the array, and then we want to take the description
+    // of that, which is one of the properties of each object.
+    // And then since this is a string, we can call localCompare.
+    // And then here we simply pass in another string
+    // which is b dot description.
+    sortedItems = items
+      .slice()
+      .sort((a, b) => a.description.localeCompare(b.description));
+
+  if (sortBy === "packed")
+    //   And then finally, let's also add the code for our last case
+    // which is by packed.
+    // And so something very similar here
+    // sortedItems is going to be equal to items
+    // Taking a copy dot sort .
+    // And then a and b which are basically two objects
+    // of the array which are being compared.
+    // And then since we want to order by the packed status
+    // which is a boolean,
+    // we need to first convert that to a number.
+    // So a dot packed minus number b dot packed,
+    // and that's it.
+    sortedItems = items
+      .slice()
+      .sort((a, b) => Number(a.packed) - Number(b.packed));
+
   return (
     <div className="list">
       <ul>
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <Item
             item={item}
             onDeleteItem={onDeleteItem}
@@ -1299,6 +1342,13 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
           />
         ))}
       </ul>
+      <div className="actions">
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="input">Sort by input order</option>
+          <option value="description">Sort by description</option>
+          <option value="packed">Sort by packed status</option>
+        </select>
+      </div>
     </div>
   );
 }
@@ -1342,3 +1392,16 @@ function Stats({ items }) {
     </footer>
   );
 }
+
+// We just implemented this simple feature
+// but also a very common feature simply
+// by using the power of derived state.
+// So again, we didn't create any new piece
+// of state for the sorted items.
+// The only state that we need is the sortBy state.
+// So that React actually has at all times the value
+// of this input field right here.
+// And then based on that, we simply create this derived state
+// of sorted items, which then
+// in the end is what we render onto the user interface.
+// And with this
