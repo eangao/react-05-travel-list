@@ -1417,6 +1417,14 @@ import { useState } from "react";
 export default function App() {
   const [items, setItems] = useState([]);
 
+  function handleClearList() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete all items?"
+    );
+
+    if (confirmed) setItems([]);
+  }
+
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
@@ -1444,6 +1452,7 @@ export default function App() {
         items={items}
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
+        onClearList={handleClearList}
       />
       <Stats items={items} />
     </div>
@@ -1496,7 +1505,7 @@ function Form({ onAddItems }) {
   );
 }
 
-function PackingList({ items, onDeleteItem, onToggleItem }) {
+function PackingList({ items, onDeleteItem, onToggleItem, onClearList }) {
   const [sortBy, setSortBy] = useState("input");
   let sortedItems;
 
@@ -1530,6 +1539,7 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
           <option value="description">Sort by description</option>
           <option value="packed">Sort by packed status</option>
         </select>
+        <button onClick={onClearList}>Clear list</button>
       </div>
     </div>
   );
@@ -1574,3 +1584,18 @@ function Stats({ items }) {
     </footer>
   );
 }
+
+// Now maybe you got a little bit annoyed
+// at all the scrolling that we had to do here now lately
+// because our components were getting bigger and bigger.
+// So whenever we wanted like to pass in something here
+// then we had to scroll all the way down here
+// to then accept, for example, these props right here.
+// And so that's why I said
+// in the very beginning
+// that in real world applications
+// we usually have one component per file.
+// And so in the next lecture I will show you a trick
+// of how we can basically divide this one file
+// into multiple files.
+// So one file per component.
