@@ -1190,17 +1190,227 @@
 //   );
 // }
 
-/////////////////////////////////////////////////////////////////////////
-// Sorting Items
-/////////////////////////////////////////////////////////////////////////
-// Let's add a new feature to our application
-// which is to allow users to sort the items
-// by three different criteria.
-// So basically we will build this select box criteria
-// and then from there the user can choose which
-// of these criteria they want to sort the list by.
-// So something that's very common in most web applications.
-// And so let's now build a very simple version of that.
+// /////////////////////////////////////////////////////////////////////////
+// // Sorting Items
+// /////////////////////////////////////////////////////////////////////////
+// // Let's add a new feature to our application
+// // which is to allow users to sort the items
+// // by three different criteria.
+// // So basically we will build this select box criteria
+// // and then from there the user can choose which
+// // of these criteria they want to sort the list by.
+// // So something that's very common in most web applications.
+// // And so let's now build a very simple version of that.
+
+// import { useState } from "react";
+
+// export default function App() {
+//   const [items, setItems] = useState([]);
+
+//   function handleAddItems(item) {
+//     setItems((items) => [...items, item]);
+//   }
+
+//   function handleDeleteItem(id) {
+//     setItems((items) => items.filter((item) => item.id !== id));
+
+//     console.log(id);
+//   }
+
+//   function handleToggleItem(id) {
+//     setItems((items) =>
+//       items.map((item) =>
+//         item.id === id ? { ...item, packed: !item.packed } : item
+//       )
+//     );
+//   }
+
+//   return (
+//     <div className="app">
+//       <Logo />
+//       <Form onAddItems={handleAddItems} />
+
+//       <PackingList
+//         items={items}
+//         onDeleteItem={handleDeleteItem}
+//         onToggleItem={handleToggleItem}
+//       />
+//       <Stats items={items} />
+//     </div>
+//   );
+// }
+
+// function Logo() {
+//   return <h1>🌴 Far Away 💼</h1>;
+// }
+
+// function Form({ onAddItems }) {
+//   const [description, setDescription] = useState("");
+//   const [quantity, setQuantity] = useState(1);
+
+//   function handleSubmit(e) {
+//     e.preventDefault();
+
+//     if (!description) return;
+//     const newItem = { description, quantity, packed: false, id: Date.now() };
+
+//     onAddItems(newItem);
+
+//     setDescription("");
+//     setQuantity(1);
+//   }
+
+//   return (
+//     <form className="add-form" onSubmit={handleSubmit}>
+//       <h3>What do you need for your 😍 trip? </h3>
+//       <select
+//         type="number"
+//         value={quantity}
+//         onChange={(e) => setQuantity(Number(e.target.value))}
+//       >
+//         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+//           <option value={num} key={num}>
+//             {num}
+//           </option>
+//         ))}
+//       </select>
+
+//       <input
+//         type="text"
+//         placeholder="Item..."
+//         value={description}
+//         onChange={(e) => setDescription(e.target.value)}
+//       ></input>
+//       <button>Add</button>
+//     </form>
+//   );
+// }
+
+// function PackingList({ items, onDeleteItem, onToggleItem }) {
+//   const [sortBy, setSortBy] = useState("input");
+//   let sortedItems;
+
+//   if (sortBy === "input") sortedItems = items;
+
+//   //   So sortedItems will then become items.
+//   // And now first we use slice.
+//   // Because with this we basically take a copy
+//   // of the array and that's very important
+//   // because the sort method is a mutating method.
+//   // And so if we didn't do this
+//   // then the items would actually get sorted as well.
+//   // So we don't want that.
+//   if (sortBy === "description")
+//     //   Now in this case, since we want to sort alphabetically,
+//     // we can use the localCompare method.
+//     // So we want to take a, which is basically one object
+//     // of the array, and then we want to take the description
+//     // of that, which is one of the properties of each object.
+//     // And then since this is a string, we can call localCompare.
+//     // And then here we simply pass in another string
+//     // which is b dot description.
+//     sortedItems = items
+//       .slice()
+//       .sort((a, b) => a.description.localeCompare(b.description));
+
+//   if (sortBy === "packed")
+//     //   And then finally, let's also add the code for our last case
+//     // which is by packed.
+//     // And so something very similar here
+//     // sortedItems is going to be equal to items
+//     // Taking a copy dot sort .
+//     // And then a and b which are basically two objects
+//     // of the array which are being compared.
+//     // And then since we want to order by the packed status
+//     // which is a boolean,
+//     // we need to first convert that to a number.
+//     // So a dot packed minus number b dot packed,
+//     // and that's it.
+//     sortedItems = items
+//       .slice()
+//       .sort((a, b) => Number(a.packed) - Number(b.packed));
+
+//   return (
+//     <div className="list">
+//       <ul>
+//         {sortedItems.map((item) => (
+//           <Item
+//             item={item}
+//             onDeleteItem={onDeleteItem}
+//             onToggleItem={onToggleItem}
+//             key={item.id}
+//           />
+//         ))}
+//       </ul>
+//       <div className="actions">
+//         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+//           <option value="input">Sort by input order</option>
+//           <option value="description">Sort by description</option>
+//           <option value="packed">Sort by packed status</option>
+//         </select>
+//       </div>
+//     </div>
+//   );
+// }
+
+// function Item({ item, onDeleteItem, onToggleItem }) {
+//   return (
+//     <li>
+//       <input
+//         type="checkbox"
+//         value={item.packed}
+//         onChange={() => onToggleItem(item.id)}
+//       />
+//       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
+//         {item.quantity} {item.description}
+//       </span>
+//       <button onClick={() => onDeleteItem(item.id)}>❌</button>
+//     </li>
+//   );
+// }
+
+// function Stats({ items }) {
+//   if (!items.length)
+//     return (
+//       <p className="stats">
+//         <em>Start adding some items to your packing list 🚀</em>
+//       </p>
+//     );
+
+//   const numItems = items.length;
+//   const numPacked = items.filter((item) => item.packed).length;
+//   const percentage = Math.round((numPacked / numItems) * 100);
+
+//   return (
+//     <footer className="stats">
+//       <em>
+//         {percentage === 100
+//           ? "You got everything! Ready to go ✈"
+//           : `💼 You have ${numItems} items on your list, and you already packed
+//         ${numPacked} (${percentage}%)`}
+//       </em>
+//     </footer>
+//   );
+// }
+
+// // We just implemented this simple feature
+// // but also a very common feature simply
+// // by using the power of derived state.
+// // So again, we didn't create any new piece
+// // of state for the sorted items.
+// // The only state that we need is the sortBy state.
+// // So that React actually has at all times the value
+// // of this input field right here.
+// // And then based on that, we simply create this derived state
+// // of sorted items, which then
+// // in the end is what we render onto the user interface.
+// // And with this
+
+//////////////////////////////////////////////////////////////
+// Clearing the List
+//////////////////////////////////////////////////////////////
+// Let's now make our application feature complete
+// by adding a button to clear up the entire list at once.
 
 import { useState } from "react";
 
@@ -1292,40 +1502,12 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
 
   if (sortBy === "input") sortedItems = items;
 
-  //   So sortedItems will then become items.
-  // And now first we use slice.
-  // Because with this we basically take a copy
-  // of the array and that's very important
-  // because the sort method is a mutating method.
-  // And so if we didn't do this
-  // then the items would actually get sorted as well.
-  // So we don't want that.
   if (sortBy === "description")
-    //   Now in this case, since we want to sort alphabetically,
-    // we can use the localCompare method.
-    // So we want to take a, which is basically one object
-    // of the array, and then we want to take the description
-    // of that, which is one of the properties of each object.
-    // And then since this is a string, we can call localCompare.
-    // And then here we simply pass in another string
-    // which is b dot description.
     sortedItems = items
       .slice()
       .sort((a, b) => a.description.localeCompare(b.description));
 
   if (sortBy === "packed")
-    //   And then finally, let's also add the code for our last case
-    // which is by packed.
-    // And so something very similar here
-    // sortedItems is going to be equal to items
-    // Taking a copy dot sort .
-    // And then a and b which are basically two objects
-    // of the array which are being compared.
-    // And then since we want to order by the packed status
-    // which is a boolean,
-    // we need to first convert that to a number.
-    // So a dot packed minus number b dot packed,
-    // and that's it.
     sortedItems = items
       .slice()
       .sort((a, b) => Number(a.packed) - Number(b.packed));
@@ -1392,16 +1574,3 @@ function Stats({ items }) {
     </footer>
   );
 }
-
-// We just implemented this simple feature
-// but also a very common feature simply
-// by using the power of derived state.
-// So again, we didn't create any new piece
-// of state for the sorted items.
-// The only state that we need is the sortBy state.
-// So that React actually has at all times the value
-// of this input field right here.
-// And then based on that, we simply create this derived state
-// of sorted items, which then
-// in the end is what we render onto the user interface.
-// And with this
